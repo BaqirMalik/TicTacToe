@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tic Tac Toe</title>
+  <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css"></link>
+  <link rel="stylesheet" type="text/css" href="./assets/css/style.css"></link>
+</head>
+<body class="p-3 mb-2 bg-primary text-white">
+<div class="row">
+  <div id="message" class="p-3 mb-2 bg-primary text-white">Player 1's turn (X)</div>
+  <div class="col-lg-4"></div>
+  <div class="col-lg-4">
+  <div id="board">
+    
+  </div>
+  </div>
+  <div class="col-lg-4"></div>
+  </div>
+
+
+
+<script>
+  const board = document.getElementById('board');
+  const message = document.getElementById('message');
+  let currentPlayer = 'X';
+  let gameBoard = ['', '', '', '', '', '', '', '', ''];
+  let gameActive = true;
+
+  function checkWinner() {
+    const winPatterns = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+      [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+      [0, 4, 8], [2, 4, 6]             // Diagonals
+    ];
+
+    for (const pattern of winPatterns) {
+      const [a, b, c] = pattern;
+      if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
+        return gameBoard[a];
+      }
+    }
+
+    return null;
+  }
+
+  function checkTie() {
+    return !gameBoard.includes('');
+  }
+
+  function handleClick(index) {
+    if (!gameActive || gameBoard[index] !== '') {
+      return;
+    }
+
+    gameBoard[index] = currentPlayer;
+    document.getElementById(`cell${index}`).innerText = currentPlayer;
+
+    const winner = checkWinner();
+    if (winner) {
+      message.innerText = `${winner} wins!`;
+      gameActive = false;
+    } else if (checkTie()) {
+      message.innerText = 'It\'s a tie!';
+      gameActive = false;
+    } else {
+      currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+      message.innerText = `Player ${currentPlayer === 'X' ? '1' : '2'}'s turn (${currentPlayer})`;
+    }
+  }
+
+  function resetGame() {
+    gameBoard = ['', '', '', '', '', '', '', '', ''];
+    gameActive = true;
+    currentPlayer = 'X';
+    message.innerText = 'Player 1\'s turn (X)';
+
+    for (let i = 0; i < 9; i++) {
+      document.getElementById(`cell${i}`).innerText = '';
+    }
+  }
+
+  // Create the game board
+  for (let i = 0; i < 9; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.id = `cell${i}`;
+    cell.addEventListener('click', () => handleClick(i));
+    board.appendChild(cell);
+  }
+
+  // Add reset button
+  const resetButton = document.createElement('button');
+  resetButton.innerText = 'Reset Game';
+  resetButton.addEventListener('click', resetGame);
+  debugger;
+  resetButton.classList.add('btn-primary');
+  document.body.appendChild(resetButton);
+</script>
+
+</body>
+</html>
